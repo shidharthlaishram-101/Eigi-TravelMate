@@ -1,0 +1,187 @@
+{
+  "destinations": [
+    {
+      "name": "Loktak Lake",
+      "location": "Bishnupur, Manipur",
+      "category": "Nature",
+      "description": "Loktak Lake is the largest freshwater lake in Northeast India and is known for its floating phumdis.",
+
+      "airport_access": {
+            "airport": "Bir Tikendrajit International Airport",
+            "distance_km": null,
+            "distance_type": "not_verified",
+            "approx_travel_time": null
+        },
+
+      "highlights": [
+        "Floating phumdis",
+        "Scenic lake views",
+        "Boating",
+        "Nearby Keibul Lamjao National Park"
+      ],
+      "keywords": [
+        "loktak",
+        "lake",
+        "nature",
+        "boating",
+        "phumdis",
+        "bishnupur",
+        "airport",
+        "distance"
+      ]
+    },
+    {
+      "name": "Kangla",
+      "location": "Imphal, Manipur",
+      "category": "Heritage",
+      "description": "Kangla is a historic site in Imphal and an important cultural and heritage destination of Manipur.",
+
+        "airport_access": {
+            "airport": "Bir Tikendrajit International Airport",
+            "distance_km": 7.4,
+            "distance_type": "reported",
+            "approx_travel_time": "15-25 minutes"
+        },
+
+      "highlights": [
+        "Historical site",
+        "Manipur heritage",
+        "Traditional architecture",
+        "Cultural exploration"
+      ],
+      "keywords": [
+        "kangla",
+        "imphal",
+        "heritage",
+        "history",
+        "culture",
+        "fort",
+        "airport",
+        "distance"
+      ]
+    },
+    {
+      "name": "Keibul Lamjao National Park",
+      "location": "Bishnupur, Manipur",
+      "category": "Wildlife",
+      "description": "Keibul Lamjao National Park is known for its wetland ecosystem and the sangai, the endangered brow-antlered deer associated with Manipur.",
+      
+      "airport_access": {
+        "airport": "Bir Tikendrajit International Airport",
+        "distance_km": null,
+        "distance_type": "not_verified",
+        "approx_travel_time": null
+        },
+      
+      "highlights": [
+        "Sangai deer",
+        "Wetland ecosystem",
+        "Wildlife viewing",
+        "Natural scenery"
+      ],
+      "keywords": [
+        "keibul",
+        "lamjao",
+        "sangai",
+        "deer",
+        "wildlife",
+        "nature",
+        "bishnupur",
+        "airport",
+        "distance"
+      ]
+    },
+    {
+      "name": "Ima Keithel",
+      "location": "Imphal, Manipur",
+      "category": "Shopping",
+      "description": "Ima Keithel is a traditional market in Imphal known for its women vendors and wide range of local products.",
+      
+      "airport_access": {
+        "airport": "Bir Tikendrajit International Airport",
+        "distance_km": 5,
+        "distance_type": "reported",
+        "approx_travel_time": "10-15 minutes"
+        },
+      
+      "highlights": [
+        "Local shopping",
+        "Traditional market",
+        "Local products",
+        "Manipur culture"
+      ],
+      "keywords": [
+        "ima keithel",
+        "market",
+        "shopping",
+        "imphal",
+        "women",
+        "culture",
+        "local products",
+        "airport",
+        "distance"
+      ]
+    },
+    {
+      "name": "Shirui Hills",
+      "location": "Ukhrul, Manipur",
+      "category": "Adventure",
+      "description": "Shirui Hills in Ukhrul is a scenic destination known for its natural landscape and the Shirui lily.",
+      
+      "airport_access": {
+        "airport": "Bir Tikendrajit International Airport",
+        "distance_km": null,
+        "distance_type": "not_verified",
+        "approx_travel_time": null
+        },
+      
+      "highlights": [
+        "Mountain scenery",
+        "Hiking",
+        "Shirui lily",
+        "Ukhrul"
+      ],
+      "keywords": [
+        "shirui",
+        "hills",
+        "ukhrul",
+        "adventure",
+        "hiking",
+        "shirui lily",
+        "mountains",
+        "airport",
+        "distance"
+      ]
+    },
+    {
+      "name": "INA Memorial",
+      "location": "Moirang, Manipur",
+      "category": "Heritage",
+      "description": "The INA Memorial at Moirang is associated with the history of the Indian National Army and its connection with Manipur.",
+      
+      "airport_access": {
+        "airport": "Bir Tikendrajit International Airport",
+        "distance_km": 38,
+        "distance_type": "reported",
+        "approx_travel_time": "59 minutes approximately"
+        },
+      
+      "highlights": [
+        "Historical significance",
+        "INA history",
+        "Moirang",
+        "Heritage"
+      ],
+      "keywords": [
+        "ina",
+        "memorial",
+        "moirang",
+        "history",
+        "heritage",
+        "indian national army",
+        "airport",
+        "distance"
+      ]
+    }
+  ]
+}
