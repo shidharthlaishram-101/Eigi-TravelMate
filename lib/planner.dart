@@ -1080,6 +1080,131 @@ class ItineraryScreen extends StatelessWidget {
                     //   ),
                     const SizedBox(height: 20),
 
+                    // BUDGET SUMMARY
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.account_balance_wallet_outlined,
+                                color: Color(0xFF16423C),
+                                size: 21,
+                              ),
+                              SizedBox(width: 9),
+                              Text(
+                                'Budget Summary',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF17201D),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          _BudgetRow(
+                            label: 'Your Budget',
+                            value: '${budgetSummary['budget'] ?? budget}',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          _BudgetRow(
+                            label: 'Transport',
+                            value: '₹${budgetSummary['transport_cost'] ?? 0}',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          _BudgetRow(
+                            label: 'Entry Fees',
+                            value: '₹${budgetSummary['entry_fee'] ?? 0}',
+                          ),
+
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 13),
+                            child: Divider(height: 1),
+                          ),
+
+                          _BudgetRow(
+                            label: 'Estimated Total',
+                            value: '₹${budgetSummary['total_cost'] ?? 0}',
+                            bold: true,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          _BudgetRow(
+                            label: 'Remaining Budget',
+                            value: '₹${budgetSummary['remaining_budget'] ?? 0}',
+                            bold: true,
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 13,
+                              vertical: 11,
+                            ),
+                            decoration: BoxDecoration(
+                              color: (budgetSummary['within_budget'] == true)
+                                  ? const Color(0xFFE5F0EC)
+                                  : const Color(0xFFFFE8E6),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  budgetSummary['within_budget'] == true
+                                      ? Icons.check_circle_outline_rounded
+                                      : Icons.warning_amber_rounded,
+                                  size: 19,
+                                  color: budgetSummary['within_budget'] == true
+                                      ? const Color(0xFF16423C)
+                                      : Colors.redAccent,
+                                ),
+
+                                const SizedBox(width: 9),
+
+                                Expanded(
+                                  child: Text(
+                                    budgetSummary['within_budget'] == true
+                                        ? 'This trip is within your budget'
+                                        : 'This trip exceeds your budget',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          budgetSummary['within_budget'] == true
+                                          ? const Color(0xFF16423C)
+                                          : Colors.redAccent,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
                     // ACTIONS
                     Row(
                       children: [
@@ -1195,11 +1320,11 @@ class _ApiDayPlan extends StatelessWidget {
                     ),
                   ),
 
-                  const Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 11,
-                    color: Color(0xFF9AA09D),
-                  ),
+                  // const Icon(
+                  //   Icons.arrow_forward_ios_rounded,
+                  //   size: 11,
+                  //   color: Color(0xFF9AA09D),
+                  // ),
                 ],
               ),
             );
@@ -1358,6 +1483,47 @@ class _ItineraryAction extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUDGET ROW
+// ═══════════════════════════════════════════════════════════
+class _BudgetRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool bold;
+
+  const _BudgetRow({
+    required this.label,
+    required this.value,
+    this.bold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: const Color(0xFF69716D),
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 13,
+            color: const Color(0xFF17201D),
+            fontWeight: bold ? FontWeight.w800 : FontWeight.w700,
+          ),
+        ),
+      ],
     );
   }
 }
