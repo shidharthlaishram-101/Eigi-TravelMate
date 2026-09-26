@@ -10,6 +10,7 @@ class PlannerScreen extends StatefulWidget {
 
 class _PlannerScreenState extends State<PlannerScreen> {
   int days = 3;
+  int travelers = 1;
   String budget = '₹10,000';
   String selectedInterest = 'Nature';
   String startingPoint = 'Imphal';
@@ -83,21 +84,21 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     ],
                   ),
 
-                  const Spacer(),
+                  // const Spacer(),
 
-                  Container(
-                    height: 44,
-                    width: 44,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE5F0EC),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      color: Color(0xFF16423C),
-                      size: 21,
-                    ),
-                  ),
+                  // Container(
+                  //   height: 44,
+                  //   width: 44,
+                  //   decoration: BoxDecoration(
+                  //     color: const Color(0xFFE5F0EC),
+                  //     borderRadius: BorderRadius.circular(14),
+                  //   ),
+                  //   child: const Icon(
+                  //     Icons.auto_awesome_rounded,
+                  //     color: Color(0xFF16423C),
+                  //     size: 21,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -233,6 +234,79 @@ class _PlannerScreenState extends State<PlannerScreen> {
                               if (days < 14) {
                                 setState(() {
                                   days++;
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // ─────────────────────────────────────
+                    // NUMBER OF TRAVELERS
+                    // ─────────────────────────────────────
+                    const Text(
+                      "How many travellers?",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF17201D),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(17),
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          _CounterButton(
+                            icon: Icons.remove_rounded,
+                            onTap: () {
+                              if (travelers > 1) {
+                                setState(() {
+                                  travelers--;
+                                });
+                              }
+                            },
+                          ),
+
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '$travelers',
+                                  style: const TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF16423C),
+                                  ),
+                                ),
+                                const Text(
+                                  'travellers',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Color(0xFF7A827E),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          _CounterButton(
+                            icon: Icons.add_rounded,
+                            onTap: () {
+                              if (travelers < 15) {
+                                setState(() {
+                                  travelers++;
                                 });
                               }
                             },
@@ -596,7 +670,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
       final result = await TripPlannerApi.planTrip(
         budget: numericBudget,
         days: days,
-        travelers: 1,
+        travelers: travelers,
         interests: [interest],
       );
 
@@ -612,6 +686,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
           MaterialPageRoute(
             builder: (context) => ItineraryScreen(
               days: days,
+              travelers: travelers,
               budget: budget,
               interest: selectedInterest,
               startingPoint: startingPoint,
@@ -845,6 +920,7 @@ class _SelectionSheet extends StatelessWidget {
 
 class ItineraryScreen extends StatelessWidget {
   final int days;
+  final int travelers;
   final String budget;
   final String interest;
   final String startingPoint;
@@ -855,6 +931,7 @@ class ItineraryScreen extends StatelessWidget {
   const ItineraryScreen({
     super.key,
     required this.days,
+    required this.travelers,
     required this.budget,
     required this.interest,
     required this.startingPoint,
@@ -944,7 +1021,7 @@ class ItineraryScreen extends StatelessWidget {
                           const SizedBox(height: 14),
 
                           Text(
-                            '$days Days • $budget',
+                            '$days Days • $budget • $travelers Travelers ',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 23,
@@ -975,33 +1052,32 @@ class ItineraryScreen extends StatelessWidget {
                       return _ApiDayPlan(dayPlan: dayPlan);
                     }),
 
-                    if (days > 3)
-                      Container(
-                        margin: const EdgeInsets.only(top: 5),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.more_horiz_rounded,
-                              color: Color(0xFF16423C),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'AI will create ${days - 3} more days...',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF69716D),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
+                    // if (days > 3)
+                    //   Container(
+                    //     margin: const EdgeInsets.only(top: 5),
+                    //     padding: const EdgeInsets.all(15),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       borderRadius: BorderRadius.circular(15),
+                    //     ),
+                    //     child: Row(
+                    //       children: [
+                    //         const Icon(
+                    //           Icons.more_horiz_rounded,
+                    //           color: Color(0xFF16423C),
+                    //         ),
+                    //         const SizedBox(width: 10),
+                    //         Text(
+                    //           'AI will create ${days - 3} more days...',
+                    //           style: const TextStyle(
+                    //             fontSize: 12,
+                    //             color: Color(0xFF69716D),
+                    //             fontWeight: FontWeight.w600,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
                     const SizedBox(height: 20),
 
                     // ACTIONS

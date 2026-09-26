@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class TripPlannerApi {
   // IP address of the computer running FastAPI
-  static const String baseUrl = 'http://192.168.137.48:8000';
+  static const String baseUrl = 'http://192.168.1.4:8000';
 
   static Future<Map<String, dynamic>> planTrip({
     required double budget,
