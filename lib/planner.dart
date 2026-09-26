@@ -938,32 +938,44 @@ class ItineraryScreen extends StatelessWidget {
 
   Future<void> _shareTrip(BuildContext context) async {
     try {
-      final Uint8List? image = await screenshotController.capture(
-        pixelRatio: 2.0,
-      );
+      final screenshotController = ScreenshotController();
 
-      if (image == null) {
-        return;
-      }
+      final Uint8List image = await screenshotController.captureFromLongWidget(
+        _TripShareCard(
+          days: days,
+          travelers: travelers,
+          budget: budget,
+          interest: interest,
+          startingPoint: startingPoint,
+          itinerary: itinerary,
+          budgetSummary: budgetSummary,
+        ),
+        pixelRatio: 3.0,
+        delay: const Duration(milliseconds: 100),
+        context: context,
+        constraints: const BoxConstraints(maxWidth: 720),
+      );
 
       final directory = await getTemporaryDirectory();
 
-      final file = File('${directory.path}/eigi_travelmate_trip.png');
+      final file = File('${directory.path}/eigi_travelmate_itinerary.png');
 
       await file.writeAsBytes(image);
 
       await SharePlus.instance.share(
         ShareParams(
-          text:
-              "Hey! Check this out - A Manipuri travel plan created using Eigi TravelMate 🌿",
+          title: 'Eigi TravelMate Itinerary',
+          text: 'My Manipur trip planned with Eigi TravelMate 🌿',
           files: [XFile(file.path)],
         ),
       );
     } catch (e) {
+      debugPrint('Share trip error: $e');
+
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Unable to share trip: $e")));
+        ).showSnackBar(SnackBar(content: Text('Unable to share trip: $e')));
       }
     }
   }
@@ -1063,7 +1075,29 @@ class ItineraryScreen extends StatelessWidget {
                             const SizedBox(height: 14),
 
                             Text(
-                              '$days Days • $budget • $travelers Travelers ',
+                              'Days • $days',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 23,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            Text(
+                              'Budget • $budget',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 23,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            Text(
+                              'Travelers • $travelers',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 23,
@@ -1278,6 +1312,597 @@ class ItineraryScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRIP SHARE CARD
+// ═══════════════════════════════════════════════════════════
+class _TripShareCard extends StatelessWidget {
+  final int days;
+  final int travelers;
+  final String budget;
+  final String interest;
+  final String startingPoint;
+  final List<dynamic> itinerary;
+  final Map<String, dynamic> budgetSummary;
+
+  const _TripShareCard({
+    required this.days,
+    required this.travelers,
+    required this.budget,
+    required this.interest,
+    required this.startingPoint,
+    required this.itinerary,
+    required this.budgetSummary,
+  });
+
+  static const Color green = Color(0xFF176B5A);
+  static const Color lightGreen = Color(0xFFEAF5F1);
+  static const Color textDark = Color(0xFF263238);
+  static const Color textGrey = Color(0xFF6B7471);
+
+  String _rupees(dynamic value) {
+    final number = double.tryParse(value?.toString() ?? '') ?? 0;
+
+    if (number == number.roundToDouble()) {
+      return '₹${number.toInt()}';
+    }
+
+    return '₹${number.toStringAsFixed(0)}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final withinBudget = budgetSummary['within_budget'] == true;
+
+    return Material(
+      color: const Color(0xFFF7FAF9),
+      child: Container(
+        width: 680,
+        padding: const EdgeInsets.all(32),
+        color: const Color(0xFFF7FAF9),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ─────────────────────────────
+            // HEADER
+            // ─────────────────────────────
+            Center(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 42,
+                        height: 42,
+                        // decoration: BoxDecoration(
+                        //   color: green,
+                        //   borderRadius: BorderRadius.circular(13),
+                        // ),
+                        child: const Image(
+                          image: AssetImage('assets/images/logo.png'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'EIGI TRAVELMATE',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.4,
+                          color: green,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  const Text(
+                    'MANIPUR ITINERARY',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 3,
+                      color: textGrey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
+            // ─────────────────────────────
+            // TRIP INFO
+            // ─────────────────────────────
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(22),
+              decoration: BoxDecoration(
+                color: green,
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _TripInfo(
+                      icon: Icons.calendar_month_outlined,
+                      label: 'DURATION',
+                      value: '$days DAYS',
+                      light: true,
+                    ),
+                  ),
+                  Expanded(
+                    child: _TripInfo(
+                      icon: Icons.person_outline,
+                      label: 'TRAVELERS',
+                      value: '$travelers',
+                      light: true,
+                    ),
+                  ),
+                  Expanded(
+                    child: _TripInfo(
+                      icon: Icons.wallet_outlined,
+                      label: 'BUDGET',
+                      value: budget,
+                      light: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            Row(
+              children: [
+                _SmallTag(icon: Icons.auto_awesome_outlined, text: interest),
+                const SizedBox(width: 8),
+                _SmallTag(
+                  icon: Icons.location_on_outlined,
+                  text: startingPoint,
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 30),
+
+            // ─────────────────────────────
+            // JOURNEY TITLE
+            // ─────────────────────────────
+            const Text(
+              'YOUR JOURNEY',
+              style: TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
+                color: textDark,
+              ),
+            ),
+
+            const SizedBox(height: 18),
+
+            // ─────────────────────────────
+            // DAYS
+            // ─────────────────────────────
+            ...itinerary.asMap().entries.map((entry) {
+              final dayPlan = entry.value;
+
+              final int day =
+                  int.tryParse(dayPlan['day'].toString()) ?? entry.key + 1;
+
+              final List<dynamic> destinations = dayPlan['destinations'] ?? [];
+
+              return _ShareDay(
+                day: day,
+                destinations: destinations,
+                isLast: entry.key == itinerary.length - 1,
+              );
+            }),
+
+            const SizedBox(height: 18),
+
+            // ─────────────────────────────
+            // BUDGET
+            // ─────────────────────────────
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: const Color(0xFFDCE7E3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: lightGreen,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.account_balance_wallet_outlined,
+                          color: green,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'BUDGET PLAN',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: textDark,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  _BudgetShareRow(
+                    label: 'Budget',
+                    value: _rupees(budgetSummary['budget']),
+                  ),
+
+                  _BudgetShareRow(
+                    label: 'Transport',
+                    value: _rupees(budgetSummary['transport_cost']),
+                  ),
+
+                  _BudgetShareRow(
+                    label: 'Entry Fees',
+                    value: _rupees(budgetSummary['entry_fee']),
+                  ),
+
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(),
+                  ),
+
+                  _BudgetShareRow(
+                    label: 'Estimated Total',
+                    value: _rupees(budgetSummary['total_cost']),
+                    bold: true,
+                  ),
+
+                  _BudgetShareRow(
+                    label: 'Remaining Budget',
+                    value: _rupees(budgetSummary['remaining_budget']),
+                    bold: true,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 13,
+                    ),
+                    decoration: BoxDecoration(
+                      color: withinBudget
+                          ? const Color(0xFFE5F3EE)
+                          : const Color(0xFFFFE7E7),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          withinBudget
+                              ? Icons.check_circle
+                              : Icons.warning_rounded,
+                          size: 21,
+                          color: withinBudget ? green : Colors.red,
+                        ),
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Text(
+                            withinBudget
+                                ? 'Within your planned budget'
+                                : 'Exceeds your planned budget',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: withinBudget ? green : Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 28),
+
+            // ─────────────────────────────
+            // FOOTER
+            // ─────────────────────────────
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    '🌿  Eigi TravelMate',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: green,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Explore Manipur • Plan Smarter',
+                    style: TextStyle(fontSize: 12, color: textGrey),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHARE BUDGET ROW
+// ═══════════════════════════════════════════════════════════
+class _BudgetShareRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool bold;
+
+  const _BudgetShareRow({
+    required this.label,
+    required this.value,
+    this.bold = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: bold ? FontWeight.w700 : FontWeight.w500,
+                color: const Color(0xFF5F6966),
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
+              color: const Color(0xFF263238),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRIP INFO SHARE
+// ═══════════════════════════════════════════════════════════
+class _TripInfo extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool light;
+
+  const _TripInfo({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.light = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: Colors.white.withOpacity(0.85)),
+        const SizedBox(height: 7),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1,
+            color: Colors.white.withOpacity(0.7),
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SMALL TAG
+// ═══════════════════════════════════════════════════════════
+class _SmallTag extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _SmallTag({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEAF5F1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.circle, size: 7, color: Color(0xFF176B5A)),
+          const SizedBox(width: 7),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF176B5A),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHARE DAY
+// ═══════════════════════════════════════════════════════════
+class _ShareDay extends StatelessWidget {
+  final int day;
+  final List<dynamic> destinations;
+  final bool isLast;
+
+  const _ShareDay({
+    required this.day,
+    required this.destinations,
+    required this.isLast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const green = Color(0xFF176B5A);
+    const dark = Color(0xFF263238);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // TIMELINE
+        SizedBox(
+          width: 48,
+          child: Column(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(color: green, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: Text(
+                  '$day',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+
+              if (!isLast)
+                Container(
+                  width: 2,
+                  height: destinations.length * 58.0 + 28,
+                  margin: const EdgeInsets.only(top: 5),
+                  color: const Color(0xFFB8D8CF),
+                ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 14),
+
+        // DAY CONTENT
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 26),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'DAY $day',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: green,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                ...destinations.map((destination) {
+                  final String name =
+                      destination['name']?.toString() ?? destination.toString();
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 13,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFFE1E9E6)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            size: 20,
+                            color: green,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: dark,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
