@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'services/trip_planner_api.dart';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PlannerScreen extends StatefulWidget {
   const PlannerScreen({super.key});
@@ -928,7 +934,41 @@ class ItineraryScreen extends StatelessWidget {
   final List<dynamic> itinerary;
   final Map<String, dynamic> budgetSummary;
 
-  const ItineraryScreen({
+  final ScreenshotController screenshotController = ScreenshotController();
+
+  Future<void> _shareTrip(BuildContext context) async {
+    try {
+      final Uint8List? image = await screenshotController.capture(
+        pixelRatio: 2.0,
+      );
+
+      if (image == null) {
+        return;
+      }
+
+      final directory = await getTemporaryDirectory();
+
+      final file = File('${directory.path}/eigi_travelmate_trip.png');
+
+      await file.writeAsBytes(image);
+
+      await SharePlus.instance.share(
+        ShareParams(
+          text:
+              "Hey! Check this out - A Manipuri travel plan created using Eigi TravelMate 🌿",
+          files: [XFile(file.path)],
+        ),
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Unable to share trip: $e")));
+      }
+    }
+  }
+
+  ItineraryScreen({
     super.key,
     required this.days,
     required this.travelers,
@@ -945,291 +985,297 @@ class ItineraryScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF7F7F2),
 
       body: SafeArea(
-        child: Column(
-          children: [
-            // HEADER
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      height: 44,
-                      width: 44,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
+        child: Screenshot(
+          controller: screenshotController,
+          child: Column(
+            children: [
+              // HEADER
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        height: 44,
+                        width: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back_rounded,
+                          color: Color(0xFF17201D),
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.arrow_back_rounded,
+                    ),
+
+                    const SizedBox(width: 14),
+
+                    const Text(
+                      'Your Trip',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
                         color: Color(0xFF17201D),
                       ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 14),
-
-                  const Text(
-                    'Your Trip',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF17201D),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // SUMMARY
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF16423C),
-                        borderRadius: BorderRadius.circular(21),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(
-                                Icons.auto_awesome_rounded,
-                                color: Color(0xFFF1D58A),
-                                size: 19,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'AI Generated Itinerary',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 14),
-
-                          Text(
-                            '$days Days • $budget • $travelers Travelers ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 23,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-
-                          const SizedBox(height: 5),
-
-                          Text(
-                            '$interest • Starting from $startingPoint',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 28),
-
-                    // DAYS
-                    // ...List.generate(days > 3 ? 3 : days, (index) {
-                    //   return _DayPlan(day: index + 1, interest: interest); HARD CODED SECTION WHICH IS REPLACED BY API GENERATED ITINERARY
-                    // }),
-                    ...itinerary.map((dayPlan) {
-                      return _ApiDayPlan(dayPlan: dayPlan);
-                    }),
-
-                    // if (days > 3)
-                    //   Container(
-                    //     margin: const EdgeInsets.only(top: 5),
-                    //     padding: const EdgeInsets.all(15),
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.white,
-                    //       borderRadius: BorderRadius.circular(15),
-                    //     ),
-                    //     child: Row(
-                    //       children: [
-                    //         const Icon(
-                    //           Icons.more_horiz_rounded,
-                    //           color: Color(0xFF16423C),
-                    //         ),
-                    //         const SizedBox(width: 10),
-                    //         Text(
-                    //           'AI will create ${days - 3} more days...',
-                    //           style: const TextStyle(
-                    //             fontSize: 12,
-                    //             color: Color(0xFF69716D),
-                    //             fontWeight: FontWeight.w600,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    const SizedBox(height: 20),
-
-                    // BUDGET SUMMARY
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(
-                                Icons.account_balance_wallet_outlined,
-                                color: Color(0xFF16423C),
-                                size: 21,
-                              ),
-                              SizedBox(width: 9),
-                              Text(
-                                'Budget Summary',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF17201D),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 18),
-
-                          _BudgetRow(
-                            label: 'Your Budget',
-                            value: '${budgetSummary['budget'] ?? budget}',
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          _BudgetRow(
-                            label: 'Transport',
-                            value: '₹${budgetSummary['transport_cost'] ?? 0}',
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          _BudgetRow(
-                            label: 'Entry Fees',
-                            value: '₹${budgetSummary['entry_fee'] ?? 0}',
-                          ),
-
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 13),
-                            child: Divider(height: 1),
-                          ),
-
-                          _BudgetRow(
-                            label: 'Estimated Total',
-                            value: '₹${budgetSummary['total_cost'] ?? 0}',
-                            bold: true,
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          _BudgetRow(
-                            label: 'Remaining Budget',
-                            value: '₹${budgetSummary['remaining_budget'] ?? 0}',
-                            bold: true,
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 13,
-                              vertical: 11,
-                            ),
-                            decoration: BoxDecoration(
-                              color: (budgetSummary['within_budget'] == true)
-                                  ? const Color(0xFFE5F0EC)
-                                  : const Color(0xFFFFE8E6),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  budgetSummary['within_budget'] == true
-                                      ? Icons.check_circle_outline_rounded
-                                      : Icons.warning_amber_rounded,
-                                  size: 19,
-                                  color: budgetSummary['within_budget'] == true
-                                      ? const Color(0xFF16423C)
-                                      : Colors.redAccent,
-                                ),
-
-                                const SizedBox(width: 9),
-
-                                Expanded(
-                                  child: Text(
-                                    budgetSummary['within_budget'] == true
-                                        ? 'This trip is within your budget'
-                                        : 'This trip exceeds your budget',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          budgetSummary['within_budget'] == true
-                                          ? const Color(0xFF16423C)
-                                          : Colors.redAccent,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ACTIONS
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _ItineraryAction(
-                            icon: Icons.map_outlined,
-                            label: 'View Route',
-                            onTap: () {},
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _ItineraryAction(
-                            icon: Icons.share_outlined,
-                            label: 'Share Trip',
-                            onTap: () {},
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // SUMMARY
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF16423C),
+                          borderRadius: BorderRadius.circular(21),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(
+                                  Icons.auto_awesome_rounded,
+                                  color: Color(0xFFF1D58A),
+                                  size: 19,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'AI Generated Itinerary',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            Text(
+                              '$days Days • $budget • $travelers Travelers ',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 23,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            Text(
+                              '$interest • Starting from $startingPoint',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 28),
+
+                      // DAYS
+                      // ...List.generate(days > 3 ? 3 : days, (index) {
+                      //   return _DayPlan(day: index + 1, interest: interest); HARD CODED SECTION WHICH IS REPLACED BY API GENERATED ITINERARY
+                      // }),
+                      ...itinerary.map((dayPlan) {
+                        return _ApiDayPlan(dayPlan: dayPlan);
+                      }),
+
+                      // if (days > 3)
+                      //   Container(
+                      //     margin: const EdgeInsets.only(top: 5),
+                      //     padding: const EdgeInsets.all(15),
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.circular(15),
+                      //     ),
+                      //     child: Row(
+                      //       children: [
+                      //         const Icon(
+                      //           Icons.more_horiz_rounded,
+                      //           color: Color(0xFF16423C),
+                      //         ),
+                      //         const SizedBox(width: 10),
+                      //         Text(
+                      //           'AI will create ${days - 3} more days...',
+                      //           style: const TextStyle(
+                      //             fontSize: 12,
+                      //             color: Color(0xFF69716D),
+                      //             fontWeight: FontWeight.w600,
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      const SizedBox(height: 20),
+
+                      // BUDGET SUMMARY
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black.withOpacity(0.05),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(
+                                  Icons.account_balance_wallet_outlined,
+                                  color: Color(0xFF16423C),
+                                  size: 21,
+                                ),
+                                SizedBox(width: 9),
+                                Text(
+                                  'Budget Summary',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFF17201D),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            _BudgetRow(
+                              label: 'Your Budget',
+                              value: '${budgetSummary['budget'] ?? budget}',
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            _BudgetRow(
+                              label: 'Transport',
+                              value: '₹${budgetSummary['transport_cost'] ?? 0}',
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            _BudgetRow(
+                              label: 'Entry Fees',
+                              value: '₹${budgetSummary['entry_fee'] ?? 0}',
+                            ),
+
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 13),
+                              child: Divider(height: 1),
+                            ),
+
+                            _BudgetRow(
+                              label: 'Estimated Total',
+                              value: '₹${budgetSummary['total_cost'] ?? 0}',
+                              bold: true,
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            _BudgetRow(
+                              label: 'Remaining Budget',
+                              value:
+                                  '₹${budgetSummary['remaining_budget'] ?? 0}',
+                              bold: true,
+                            ),
+
+                            const SizedBox(height: 15),
+
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 13,
+                                vertical: 11,
+                              ),
+                              decoration: BoxDecoration(
+                                color: (budgetSummary['within_budget'] == true)
+                                    ? const Color(0xFFE5F0EC)
+                                    : const Color(0xFFFFE8E6),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    budgetSummary['within_budget'] == true
+                                        ? Icons.check_circle_outline_rounded
+                                        : Icons.warning_amber_rounded,
+                                    size: 19,
+                                    color:
+                                        budgetSummary['within_budget'] == true
+                                        ? const Color(0xFF16423C)
+                                        : Colors.redAccent,
+                                  ),
+
+                                  const SizedBox(width: 9),
+
+                                  Expanded(
+                                    child: Text(
+                                      budgetSummary['within_budget'] == true
+                                          ? 'This trip is within your budget'
+                                          : 'This trip exceeds your budget',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color:
+                                            budgetSummary['within_budget'] ==
+                                                true
+                                            ? const Color(0xFF16423C)
+                                            : Colors.redAccent,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // ACTIONS
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _ItineraryAction(
+                              icon: Icons.map_outlined,
+                              label: 'View Route',
+                              onTap: () {},
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _ItineraryAction(
+                              icon: Icons.share_outlined,
+                              label: 'Share Trip',
+                              onTap: () => _shareTrip(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
