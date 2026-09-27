@@ -53,7 +53,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: const Icon(
@@ -124,7 +124,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Row(
@@ -240,7 +240,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF16423C).withOpacity(0.22),
+                              color: const Color(0xFF16423C).withValues(alpha: 0.22),
                               blurRadius: 22,
                               spreadRadius: 4,
                             ),
@@ -589,7 +589,7 @@ class _TranslationCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black.withOpacity(0.05)),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -690,7 +690,7 @@ class _PhraseChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.black.withOpacity(0.05)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

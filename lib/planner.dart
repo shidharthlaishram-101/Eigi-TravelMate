@@ -55,7 +55,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: const Icon(
@@ -134,7 +134,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                             height: 52,
                             width: 52,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.12),
+                              color: Colors.white.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: const Icon(
@@ -196,7 +196,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(17),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Row(
@@ -270,7 +270,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(17),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Row(
@@ -349,7 +349,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                           ),
                         ),
                         child: Row(
@@ -481,7 +481,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                           ),
                         ),
                         child: Row(
@@ -798,7 +798,7 @@ class _InterestChip extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? const Color(0xFF16423C)
-                : Colors.black.withOpacity(0.05),
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         child: Row(
@@ -1164,7 +1164,7 @@ class ItineraryScreen extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                           ),
                         ),
                         child: Column(
@@ -1721,7 +1721,7 @@ class _TripInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: Colors.white.withOpacity(0.85)),
+        Icon(icon, size: 20, color: Colors.white.withValues(alpha: 0.85)),
         const SizedBox(height: 7),
         Text(
           label,
@@ -1729,7 +1729,7 @@ class _TripInfo extends StatelessWidget {
             fontSize: 10,
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
         const SizedBox(height: 3),
@@ -1968,7 +1968,7 @@ class _ApiDayPlan extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.black.withOpacity(0.04)),
+                border: Border.all(color: Colors.black.withValues(alpha: 0.04)),
               ),
               child: Row(
                 children: [
@@ -2136,7 +2136,7 @@ class _ItineraryAction extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.black.withOpacity(0.05)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

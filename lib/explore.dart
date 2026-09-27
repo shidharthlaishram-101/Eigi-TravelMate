@@ -200,7 +200,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: const Icon(
@@ -271,7 +271,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: TextField(
@@ -481,7 +481,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         height: 38,
                         width: 38,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.92),
+                          color: Colors.white.withValues(alpha: 0.92),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.close_rounded, size: 20),
@@ -641,7 +641,7 @@ class _CategoryChip extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? const Color(0xFF16423C)
-                : Colors.black.withOpacity(0.05),
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         child: Text(
@@ -688,7 +688,7 @@ class _FeaturedDestination extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.transparent, Colors.black.withOpacity(0.75)],
+              colors: [Colors.transparent, Colors.black.withValues(alpha: 0.75)],
             ),
           ),
           child: Column(
@@ -698,7 +698,7 @@ class _FeaturedDestination extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -764,7 +764,7 @@ class _DestinationGridCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.black.withOpacity(0.05)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -800,7 +800,7 @@ class _DestinationGridCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.92),
+                      color: Colors.white.withValues(alpha: 0.92),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(

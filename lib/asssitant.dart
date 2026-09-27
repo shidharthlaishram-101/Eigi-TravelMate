@@ -99,7 +99,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: const Icon(
@@ -170,7 +170,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF16423C).withOpacity(0.18),
+                            color: const Color(0xFF16423C).withValues(alpha: 0.18),
                             blurRadius: 25,
                             spreadRadius: 3,
                           ),
@@ -216,7 +216,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                         ),
                       ),
                       child: Column(
@@ -282,7 +282,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                     // ─────────────────────────────────────
                     GestureDetector(
                       onTap: () {
-                        // TODO:
+                        // TODO
                         // Start speech recognition
                         _toggleListening();
                       },
@@ -294,7 +294,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF16423C).withOpacity(0.25),
+                              color: const Color(0xFF16423C).withValues(alpha: 0.25),
                               blurRadius: 30,
                               spreadRadius: 6,
                             ),
@@ -330,7 +330,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                               ),
                             ),
                             child: TextField(
@@ -444,7 +444,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(18),
                             border: Border.all(
-                              color: const Color(0xFF16423C).withOpacity(0.08),
+                              color: const Color(0xFF16423C).withValues(alpha: 0.08),
                             ),
                           ),
                           child: Column(
